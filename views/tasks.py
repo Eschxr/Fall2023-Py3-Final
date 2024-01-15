@@ -14,20 +14,20 @@ class TasksView(View):
 
     def create_widgets(self):
         # Add code to display a list of tasks here
-        tb.Label(self.frame, text="Welcome to your list of tasks", bootstyle="primary", font=(FONT_FAMILY, 20)).pack(side=TOP, pady=60)
+        tb.Label(self.frame, text="Welcome to Your List", bootstyle="info", font=(FONT_FAMILY, 25)).pack(side=TOP, pady=60)
 
         self.tasks_tree = tb.Treeview(self.frame, bootstyle=SUCCESS, columns=self.tree_columns, show=HEADINGS)
-        self.tasks_tree.pack()
+        self.tasks_tree.pack(expand=TRUE, fill=X, padx=PL, pady=PL)
         self.tasks_tree.heading('title', text="Title")
         self.tasks_tree.heading('id', text="ID")
         self.tasks_tree.heading('complete', text="Completion")
         self.tasks_tree.heading('priority', text="Priority")
         self.tasks_tree.heading('description', text="Description")
 
-        tb.Button(self.frame, text="Get tasks list", command=self.get_tasks).pack()
-        tb.Button(self.frame, text="To task detail", command=self.app.show_task_view).pack()
-        tb.Button(self.frame, text="Create Task", command=self.app.show_create_task_view).pack()
-        tb.Button(self.frame, text="Update Task", command=self.app.show_update_task_view).pack()
+        tb.Button(self.frame, text="Get Tasks List", command=self.get_tasks, bootstyle=DARK).pack(side=LEFT, padx=10, pady=10)
+        tb.Button(self.frame, text="Task Details", command=self.app.show_task_view, bootstyle=DARK).pack(side=LEFT, padx=10, pady=10)
+        tb.Button(self.frame, text="Create Task", command=self.app.show_create_task_view, bootstyle="outline success").pack(side=RIGHT, padx=10, pady=10)
+        tb.Button(self.frame, text="Update Task", command=self.app.show_update_task_view, bootstyle="outline info").pack(side=RIGHT, padx=10, pady=10)
         
 
     def get_tasks(self):
@@ -49,12 +49,12 @@ class TaskView(View):
         self.create_widgets()
 
     def create_widgets(self):
-        tb.Label(self.frame, text="Task Manager").pack()
-        tb.Label(self.frame, textvariable=self.displayed_task).pack()
-        tb.Entry(self.frame, textvariable=self.requested_task_id).pack()
-        tb.Button(self.frame, text="Search Task by ID", command=self.get_task).pack()
-        tb.Button(self.frame, text="Delete Current Task", command=self.delete_task).pack()
-        tb.Button(self.frame, text="Back to View Tasks", command=self.app.show_tasks_view).pack()
+        tb.Label(self.frame, text="Task Manager", font=(FONT_FAMILY, 25), bootstyle=PRIMARY).pack(padx=PM, pady=PM)
+        tb.Label(self.frame, textvariable=self.displayed_task, font=(FONT_FAMILY, 15), bootstyle=INFO).pack(padx=PM, pady=PM)
+        tb.Entry(self.frame, textvariable=self.requested_task_id, width=40).pack(padx=PM, pady=PM)
+        tb.Button(self.frame, text="Search Task by ID", command=self.get_task, bootstyle=SUCCESS).pack(padx=PS, pady=PS)
+        tb.Button(self.frame, text="Delete Current Task", command=self.delete_task, bootstyle="outline warning").pack(padx=PS, pady=PS)
+        tb.Button(self.frame, text="Back to List", command=self.app.show_tasks_view, bootstyle=INFO).pack(padx=PS, pady=PS)
 
     def get_task(self):
         headers={'Content-Type': "application/json", "Authorization": f"Bearer {self.app.token['access_token']}"}
@@ -76,7 +76,8 @@ class TaskView(View):
                 self.create_toast("Success", "Your task has been deleted")
             except:
                 self.create_toast("Error", "A problem has occured, please check your task ID or try again later")
-
+        else:
+            self.create_toast("Error", "Invalid Task ID")
 
 class CreateTaskView(View):
     def __init__(self, app):
@@ -86,13 +87,13 @@ class CreateTaskView(View):
         self.create_widgets()
 
     def create_widgets(self):
-        tb.Label(self.frame, text="Task Name:").pack()
-        tb.Entry(self.frame, textvariable=self.task_name_var).pack()
-        tb.Label(self.frame, text="Description:").pack()
-        tb.Entry(self.frame, textvariable=self.task_description_var).pack()
+        tb.Label(self.frame, text="Task Name:", font=(FONT_FAMILY, 25), bootstyle=PRIMARY).pack(padx=PM, pady=PM)
+        tb.Entry(self.frame, textvariable=self.task_name_var, width=40).pack(padx=PM, pady=PM)
+        tb.Label(self.frame, text="Description:", font=(FONT_FAMILY, 25), bootstyle=PRIMARY).pack(padx=PM, pady=PM)
+        tb.Entry(self.frame, textvariable=self.task_description_var, width=40).pack(padx=PM, pady=PM)
 
-        tb.Button(self.frame, text="Create Task", command=self.create_task).pack()
-        tb.Button(self.frame, text="Back", command=self.app.show_task_view).pack()
+        tb.Button(self.frame, text="Create Task", command=self.create_task, bootstyle=SUCCESS).pack(padx=PS, pady=PS)
+        tb.Button(self.frame, text="Back", command=self.app.show_tasks_view, bootstyle="outline dark").pack(padx=PS, pady=PS)
 
     def create_task(self):
         task_name = self.task_name_var.get()
@@ -112,7 +113,7 @@ class CreateTaskView(View):
             self.create_toast("Error", f"Request failed with status code {response.status_code}")
 
         # After creating the task, show the task page
-        self.app.show_task_view()
+        self.app.show_tasks_view()
 
 
 class UpdateTaskView(View):
@@ -125,17 +126,17 @@ class UpdateTaskView(View):
         self.create_widgets()
 
     def create_widgets(self):
-        tb.Label(self.frame, text="Task ID:").pack()
-        tb.Entry(self.frame, textvariable=self.taskid).pack()
-        tb.Label(self.frame, text="Updated Task Name:").pack()
-        tb.Entry(self.frame, textvariable=self.updated_name_var).pack()
-        tb.Label(self.frame, text="Updated Description:").pack()
-        tb.Entry(self.frame, textvariable=self.updated_description_var).pack()
-        tb.Label(self.frame, text="Updated Completion Status:").pack()
-        tb.Entry(self.frame, textvariable=self.updated_completion_var).pack()
+        tb.Label(self.frame, text="Task ID:", font=(FONT_FAMILY, 15), bootstyle=PRIMARY).pack(padx=PM, pady=PS)
+        tb.Entry(self.frame, textvariable=self.taskid, width=40).pack(padx=PM, pady=PM)
+        tb.Label(self.frame, text="Updated Task Name:", font=(FONT_FAMILY, 15), bootstyle=PRIMARY).pack(padx=PM, pady=PS)
+        tb.Entry(self.frame, textvariable=self.updated_name_var, width=40).pack(padx=PM, pady=PM)
+        tb.Label(self.frame, text="Updated Description:", font=(FONT_FAMILY, 15), bootstyle=PRIMARY).pack(padx=PM, pady=PS)
+        tb.Entry(self.frame, textvariable=self.updated_description_var, width=40).pack(padx=PM, pady=PM)
+        tb.Label(self.frame, text="Updated Completion Status:", font=(FONT_FAMILY, 15), bootstyle=PRIMARY).pack(padx=PM, pady=PS)
+        tb.Entry(self.frame, textvariable=self.updated_completion_var, width=40).pack(padx=PM, pady=PM)
 
-        tb.Button(self.frame, text="Update Task", command=self.update_task).pack()
-        tb.Button(self.frame, text="Back", command=self.app.show_task_view).pack()
+        tb.Button(self.frame, text="Update Task", command=self.update_task, bootstyle=SUCCESS).pack(padx=PS, pady=PXS)
+        tb.Button(self.frame, text="Back", command=self.app.show_tasks_view, bootstyle="outline dark").pack(padx=PS, pady=PXS)
 
     def update_task(self):
         taskid = int(self.taskid.get())
@@ -157,4 +158,4 @@ class UpdateTaskView(View):
             self.create_toast("Error", f"Request failed with status code {response.status_code}")
 
         # After creating the task, show the task page
-        self.app.show_task_view()
+        self.app.show_tasks_view()

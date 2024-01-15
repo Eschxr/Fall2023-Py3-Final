@@ -12,12 +12,21 @@ class LoginView(View):
         self.create_widgets()
 
     def create_widgets(self):
-        tb.Label(self.frame, text="Email:").pack()
-        tb.Entry(self.frame, textvariable=self.email_var).pack()
-        tb.Label(self.frame, text="Password:").pack()
-        tb.Entry(self.frame, textvariable=self.password_var, show="*").pack()
-        tb.Button(self.frame, text="Login", command=self.login, bootstyle=SUCCESS).pack()
-        tb.Button(self.frame, text="Back", command=self.app.show_home_view, bootstyle=DANGER).pack()
+        bg0 = tb.Frame(self.frame, bootstyle=LIGHT)
+        bg0.pack(expand=TRUE, fill=BOTH)
+        bg1 = tb.Frame(bg0, bootstyle=DARK)
+        bg1.pack(expand=TRUE, fill=BOTH)
+        bg2 = tb.Frame(bg0, bootstyle=DARK)
+        bg2.pack(expand=TRUE, fill=BOTH)
+        bg3 = tb.Frame(bg0, bootstyle=SECONDARY)
+        bg3.pack(expand=TRUE, side=BOTTOM, anchor=SE, padx=10, pady=10)
+        tb.Label(bg1, text="Please Enter Your Credentials", font=(FONT_FAMILY, 30), bootstyle="inverse dark").pack(padx=10, ipady=25)
+        tb.Label(bg1, text="Email:", font=(FONT_FAMILY, 20), bootstyle="inverse dark").pack(side=LEFT, anchor=S, padx=10, pady=25)
+        tb.Entry(bg1, textvariable=self.email_var, width=85).pack(side=LEFT, anchor=SE, padx=10, pady=25)
+        tb.Label(bg2, text="Password:", font=(FONT_FAMILY, 20), bootstyle="inverse dark").pack(side=LEFT, anchor=N, padx=10, pady=25)
+        tb.Entry(bg2, textvariable=self.password_var, show="*", width=80).pack(side=LEFT, anchor=NE, padx=10, pady=25)
+        tb.Button(bg3, text="Login", command=self.login, bootstyle=SUCCESS).pack(side=RIGHT, padx=5, pady=10)
+        tb.Button(bg3, text="Back", command=self.app.show_home_view, bootstyle=DANGER).pack(side=RIGHT, padx=10, pady=10)
 
     def login(self):
         email = self.email_var.get()

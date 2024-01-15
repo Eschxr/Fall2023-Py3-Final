@@ -5,7 +5,7 @@ from views import login, registration, tasks, home
 
 class TaskApp(tb.Window):
     def __init__(self):
-        super().__init__(themename="vapor")
+        super().__init__(themename="cerculean")
         self.title("Task Manager")
         self.geometry("1280x720")
 
@@ -35,8 +35,8 @@ class TaskApp(tb.Window):
     def create_header(self):
         self.header_frame = tb.Frame(self, bootstyle=PRIMARY)
 
-        logout_button = tb.Button(self.header_frame, text="Logout", command=self.logout, bootstyle=SECONDARY)
-        logout_button.pack(side=RIGHT, padx=PS, pady=PXS)
+        logout_button = tb.Button(self.header_frame, text="Logout", command=self.logout, bootstyle=DANGER)
+        logout_button.pack(side=RIGHT, padx=PM, pady=PS)
 
     def show_header(self):
         self.header_frame.pack(fill=X)
