@@ -1,32 +1,36 @@
 import ttkbootstrap as tb
 from K import *
-from views import login, tasks
+from views import login, registration, tasks, home
 
 
 class TaskApp(tb.Window):
     def __init__(self):
-        super().__init__()
+        super().__init__(themename="vapor")
         self.title("Task Manager")
-        self.geometry("854x640")
+        self.geometry("1280x720")
 
         # User variables
         self.authenticated = False
         self.email = tb.StringVar()
         self.token: dict = {}
+        self.url = 'http://192.168.3.247:8000/'
 
         # Views variables
         self.current_view = None
         self.header_frame = None
         self.views = {
+            "home": home.HomeView(self),
+            "registration": registration.RegistrationView(self),
             "login": login.LoginView(self),
             "view_tasks": tasks.TasksView(self),
             "view_task": tasks.TaskView(self),
-            "create_task": tasks.CreateTaskView(self)
+            "create_task": tasks.CreateTaskView(self),
+            "update_task": tasks.UpdateTaskView(self)
         }
 
         # Init Welcome Screen
         self.create_header()
-        self.show_login_view()
+        self.show_home_view()
 
     def create_header(self):
         self.header_frame = tb.Frame(self, bootstyle=PRIMARY)
@@ -42,7 +46,13 @@ class TaskApp(tb.Window):
 
     def logout(self):
         self.authenticated = False
-        self.show_login_view()
+        self.show_home_view()
+
+    def show_home_view(self):
+        self.set_current_view("home")
+
+    def show_registration_view(self):
+        self.set_current_view("registration")
 
     def show_login_view(self):
         self.set_current_view("login")
@@ -55,6 +65,9 @@ class TaskApp(tb.Window):
 
     def show_create_task_view(self):
         self.set_current_view("create_task")
+    
+    def show_update_task_view(self):
+        self.set_current_view("update_task")
 
     def set_current_view(self, key):
         self.destroy_current_view()

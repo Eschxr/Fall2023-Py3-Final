@@ -1,4 +1,5 @@
 import ttkbootstrap as tb
+import requests as req
 from K import *
 from views.helper import View
 
@@ -16,17 +17,20 @@ class LoginView(View):
         tb.Label(self.frame, text="Password:").pack()
         tb.Entry(self.frame, textvariable=self.password_var, show="*").pack()
         tb.Button(self.frame, text="Login", command=self.login, bootstyle=SUCCESS).pack()
+        tb.Button(self.frame, text="Back", command=self.app.show_home_view, bootstyle=DANGER).pack()
 
     def login(self):
-        # Your authentication would need to be implemented here
         email = self.email_var.get()
         password = self.password_var.get()
 
-        if email == "admin" and password == "password":
+        auth = req.post(f"{self.app.url}token", data={"username": email,
+                                                                  "password": password}).json()
+
+        try:
+            self.app.token = {"access_token": auth["access_token"], "token_type": "bearer"}
             self.app.authenticated = TRUE
-            self.app.token = {"access_token": "string", "token_type": "bearer"}
             self.app.email = email
             self.password_var.set("")
             self.app.show_tasks_view()
-        else:
+        except:
             self.create_toast("401 Error", "Bad Credentials")
